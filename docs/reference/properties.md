@@ -83,10 +83,10 @@ If you need to change the visibility of an accessor or to annotate it, but don't
 you can define the accessor without defining its body:
 
 ``` kotlin
-var setterVisibility: String = "abc" // Initializer required, not a nullable type
+var setterVisibility: String = "abc"
   private set // the setter is private and has the default implementation
 
-var setterWithAnnotation: Any?
+var setterWithAnnotation: Any? = null
   @Inject set // annotate the setter with Inject
 ```
 
@@ -105,7 +105,7 @@ var counter = 0 // the initializer value is written directly to the backing fiel
 
 The `field` identifier can only be used in the accessors of the property.
 
-The compiler looks at the accessors' bodies, and if they use the backing field (or the accessor implementation is left by default), a backing field is generated, otherwise it is not.
+A backing field will be generated for a property if it uses the default implementation of at least one of the accessors, or if a custom accessor references it through the `field` identifier.
 
 For example, in the following case there will be no backing field:
 
@@ -190,6 +190,5 @@ On the other hand, with custom getters and setters one can implement any behavio
 Somewhere in between, there are certain common patterns of how a property may work. A few examples: lazy values,
 reading from a map by a given key, accessing a database, notifying listener on access, etc.
 
-Such common behaviours can be implemented as libraries using _delegated properties_.
-For more information, look [here](delegated-properties.html).
+Such common behaviours can be implemented as libraries using [_delegated properties_](delegated-properties.html).
 

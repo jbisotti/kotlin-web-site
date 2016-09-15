@@ -110,8 +110,17 @@ mnemonic notation for them:
 ### Nullability annotations
 
 Java types which have nullability annotations are represented not as platform types, but as actual nullable or non-null
-Kotlin types. Currently, the compiler supports the [JetBrains flavor of the nullability annotations](https://www.jetbrains.com/idea/help/nullable-and-notnull-annotations.html)
-(`@Nullable` and `@NotNull` from the `org.jetbrains.annotations` package).
+Kotlin types. The compiler supports several flavors of nullability annotations, including:
+
+  * [JetBrains](https://www.jetbrains.com/idea/help/nullable-and-notnull-annotations.html)
+(`@Nullable` and `@NotNull` from the `org.jetbrains.annotations` package)
+  * Android (`com.android.annotations` and `android.support.annotations`)
+  * JSR-305 (`javax.annotation`)
+  * FindBugs (`edu.umd.cs.findbugs.annotations`)
+  * Eclipse (`org.eclipse.jdt.annotation`)
+  * Lombok (`lombok.NonNull`).
+
+You can find the full list in the [Kotlin compiler source code](https://github.com/JetBrains/kotlin/blob/master/core/descriptor.loader.java/src/org/jetbrains/kotlin/load/java/JvmAnnotationNames.kt).
 
 ## Mapped types
 
@@ -226,7 +235,7 @@ javaObj.removeIndices(array)  // passes int[] to method
 When compiling to JVM byte codes, the compiler optimizes access to arrays so that there's no overhead introduced:
 
 ``` kotlin
-val array = array(1, 2, 3, 4)
+val array = arrayOf(1, 2, 3, 4)
 array[x] = array[x] * 2 // no actual calls to get() and set() generated
 for (x in array) // no iterator created
   print(x)
@@ -402,3 +411,13 @@ abstract method.
 
 Also note that this feature works only for Java interop; since Kotlin has proper function types, automatic conversion
 of functions into implementations of Kotlin interfaces is unnecessary and therefore unsupported.
+
+## Using JNI with Kotlin
+
+To declare a function that is implemented in native (C or C++) code, you need to mark it with the `external` modifier:
+
+``` kotlin
+external fun foo(x: Int): Double
+```
+
+The rest of the procedure works in exactly the same way as in Java.
